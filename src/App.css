@@ -25,6 +25,10 @@ body {
 	word-wrap: break-word;
 }
 
+.markdown-to-html img {
+	max-width: 100vw;
+}
+
 .markdown-to-html {
 	height: 100%;
 	width: 100%;
