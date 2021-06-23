@@ -149,7 +149,7 @@ function HomeContainer() {
 						return Object.keys(cases)
 							.map((_case) => {
 								if (_case !== '') {
-									return '- ' + _case + ': ' + cases[_case].helpText;
+									return '> ' + _case + ': ' + cases[_case].helpText;
 								}
 							})
 							.join('\n')
@@ -238,7 +238,7 @@ function HomeContainer() {
 							);
 						}
 					},
-					helpText: ''
+					helpText: 'Conversations about a blog.\n-c Conversation to be added about the blog\n-b Blog ID\n-v Existing conversations about the blog.'
 				}
 			};
 			switch (inputCommand) {
