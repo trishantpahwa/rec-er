@@ -94,4 +94,8 @@ body {
 	.description-text-art {
 		font-size: 8px;
 	}
+	#commandInput {
+		margin-left: 0em;
+		font-size: 12px;
+	}
 }
