@@ -22,6 +22,7 @@ body {
 	font-size: 18px;
 	font-family: monospace;
 	position: absolute;
+	word-wrap: break-word;
 }
 
 .markdown-to-html {
@@ -33,6 +34,7 @@ body {
 	background-color: black;
 	color: green;
 	overflow: scroll;
+	word-wrap: break-word;
 }
 
 ::-webkit-scrollbar {
