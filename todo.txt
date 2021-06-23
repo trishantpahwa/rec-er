@@ -1,0 +1,15 @@
+1. Markdown reader to html for text and images.
+2. Codepen for live preview of web blogs
+
+
+
+ADD global folder prefix using process.env for the main folder, just for customization.
+
+
+Set background color in of content in yaml file.
+
+
+
+
+
+# Browse by tags, calender search name

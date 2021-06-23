@@ -1,0 +1,13 @@
+.Home {
+    /* border: 1px solid; */
+}
+
+.List {
+    float: left;
+}
+
+.executed-output {
+    max-width: 100%;
+    white-space: pre-line;
+    word-wrap: break-word;
+}
