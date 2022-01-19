@@ -109,3 +109,8 @@ body {
 		font-size: 12px;
 	}
 }
+
+.codepen-iframe {
+	height: 65vh;
+	width: 85vw;
+}
