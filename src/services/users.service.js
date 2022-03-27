@@ -11,7 +11,7 @@ const UsersService = {
 				let user;
 				user = await FirebaseFirestoreService.getRecords(collection, '', [ 'email', '==', email ]);
 				if (Object.keys(user).length === 0)
-					user = await FirebaseFirestoreService.addRecord(collection, { name: name, email: email });
+					user = await FirebaseFirestoreService.addRecord(collection, { name: name, email: email, createdAt: new Date() });
 				user = { ...user, timestamp: new Date().getTime() };
 				const encryptedUser = Buffer.from(JSON.stringify(user)).toString('base64');
 				SessionService.set('User', encryptedUser.toString('base64'));
