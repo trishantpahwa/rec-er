@@ -107,4 +107,5 @@ dist
 
 src/store/firebase.config.js
 
-.dorky
+.dorky/.credentials
+.dorky/.dorkyhash
