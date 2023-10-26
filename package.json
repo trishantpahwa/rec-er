@@ -2,6 +2,18 @@
   "name": "wrec-er",
   "version": "0.1.0",
   "private": true,
+  "keywords": ["Blog"],
+  "homepage": "https://wrec-er.trishantpahwa.me",
+  "description": "My blog.",
+  "author": {
+    "name": "Trishant Pahwa",
+    "email": "trishantpahwa@gmail.com",
+    "url": "https://trishantpahwa.me"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/trishantpahwa/wrec-er.git"
+  },
   "dependencies": {
     "aws-sdk": "^2.1481.0",
     "axios": "^1.5.1",
@@ -24,22 +36,5 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  }
+  "license": "GNU General Public License"
 }
