@@ -1,6 +1,14 @@
-import firebase from "firebase";
+import { initializeApp } from "firebase/app";
+import { GoogleAuthProvider, getAuth, signInWithPopup } from 'firebase/auth';
+import { getFirestore } from 'firebase/firestore';
 import { firebaseConfig } from '../../store/firebase.config';
 
-const Firebase = firebase.initializeApp(firebaseConfig);
+initializeApp(firebaseConfig);
 
-export default Firebase;
+const auth = getAuth();
+const googleProvider = new GoogleAuthProvider();
+
+const db = getFirestore();
+
+
+export { auth, db, googleProvider, signInWithPopup };

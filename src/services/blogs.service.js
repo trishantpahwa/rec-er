@@ -4,7 +4,7 @@ import { S3Service } from './aws';
 
 const BlogsService = {
     getMetaDataList: async () => {
-        const blogsList = await S3Service.listObjects('meta')
+        const blogsList = await S3Service.listObjects('meta');
         let _blogs = await Promise.all(blogsList.map(async blog => {
             const file = await S3Service.getObject(blog);
             return YAML.parse(file.Body.toString());
@@ -17,7 +17,7 @@ const BlogsService = {
     },
     getBlogFiles: async (blog) => {
         let filesList = await S3Service.listObjects(blog);
-        filesList = filesList.filter(file => file.slice(file.length-2, file.length) === 'md')
+        filesList = filesList.filter(file => file.slice(file.length - 2, file.length) === 'md')
         const files = await Promise.all(filesList.map(async file => {
             const _file = await S3Service.getObject(file);
             return _file.Body;

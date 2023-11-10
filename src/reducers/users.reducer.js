@@ -2,7 +2,7 @@ import { UsersConstants } from '../constants';
 
 const initialState = {};
 
-export default (state = initialState, action) => {
+function usersReducers(state = initialState, action) {
 	switch (action.type) {
 		case UsersConstants.USER_LOGIN_REQUEST:
 			return { ...state };
@@ -16,3 +16,5 @@ export default (state = initialState, action) => {
 			return state;
 	}
 };
+
+export default usersReducers;

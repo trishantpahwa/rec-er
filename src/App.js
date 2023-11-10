@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 
 import { Home, Blog } from './pages';
-import { Switch, Route } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 
 import { UsersService } from './services';
 
@@ -18,15 +18,16 @@ function App() {
 	}
 
 	useEffect(() => {
+		logPageRoute();
 		UsersService.checkSession();
 	}, []);
 
 	return (
 		<div className="App">
-			<Switch>
-				<Route exact path="/" component={Home} />
-				<Route path="/blog/:id" component={Blog} />
-			</Switch>
+			<Routes>
+				<Route exact path="/" element={<Home />} />
+				<Route path="/blog/:id" element={<Blog />} />
+			</Routes>
 		</div>
 	);
 }

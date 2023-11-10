@@ -1,19 +1,23 @@
 import 'firebase/firestore';
-import Firebase from './firebase.service';
-
-const db = Firebase.firestore();
+import { db } from './firebase.service';
+import { addDoc, collection, doc, getDoc, getDocs, query, where } from 'firebase/firestore';
 
 const FirebaseFirestoreService = {
-	addRecord: async (collection, data) => {
-		const docRef = await db.collection(collection).add(data);
-		if (docRef.id) return { [docRef.id]: data };
-		else return false;
-	},
-	getRecords: async (collection, data, clause) => {
+	addRecord: async (_collection, data) => {
 		try {
-			const snapshot = await db.collection(collection).where(...clause).get();
+			const docRef = await addDoc(collection(db, _collection), data);
+			if (docRef.id) return { [docRef.id]: data };
+			else return false;
+		} catch (err) {
+			console.log(err);
+			return false;
+		}
+	},
+	getRecords: async (_collection, clause) => {
+		try {
+			const _docs = await getDocs(query(collection(db, _collection), where(...clause)));
 			let record = {};
-			snapshot.forEach((doc) => {
+			_docs.forEach((doc) => {
 				record[doc.id] = doc.data();
 			});
 			return record;
@@ -22,13 +26,13 @@ const FirebaseFirestoreService = {
 			return null;
 		}
 	},
-	getRecordByID: async (collection, id) => {
+	getRecordByID: async (_collection, id) => {
 		try {
-			const doc = await db.collection(collection).doc(id).get();
-			if (!doc.exists) {
+			const _doc = await getDoc(doc(collection(db, _collection), id));
+			if (!_doc.exists()) {
 				return null;
 			} else {
-				return doc.data();
+				return _doc.data();
 			}
 		} catch (err) {
 			console.log(err);

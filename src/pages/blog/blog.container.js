@@ -3,9 +3,13 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { BlogsActions } from "../../actions";
 import BlogView from "./blog.view";
+import { useParams } from "react-router-dom";
 
 function BlogContainer(props) {
+
   const dispatch = useDispatch();
+  const { id } = useParams();
+
   const blogFiles =
     useSelector(
       (state) => !!state.blogs && !!state.blogs.files && state.blogs.files
@@ -24,20 +28,21 @@ function BlogContainer(props) {
   };
 
   useEffect(() => {
-    dispatch(BlogsActions.getBlogFiles(props.match.params.id));
-  }, []);
+    dispatch(BlogsActions.getBlogFiles(id));
+  }, [id, dispatch]);
 
   useEffect(() => {
     if (blogFiles) {
       setCodePens(getCodePens(blogFiles["data.md"].toString()));
       setData(
-        blogFiles["data.md"].toString().split(/<codepen src=\".*\"\ \/>/)
+        blogFiles["data.md"].toString().split(/<codepen src=".*" \/>/)
       );
     }
   }, [blogFiles]);
+
   return (
     <div>
-      <BlogView markdownData={data} codePens={codePens} />
+      <BlogView id={id} markdownData={data} codePens={codePens} />
     </div>
   );
 }
