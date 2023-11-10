@@ -1,15 +1,11 @@
-import firebase from 'firebase';
 import 'firebase/auth';
-import Firebase from './firebase.service';
-
-const auth = Firebase.auth();
-const googleProvider = new firebase.auth.GoogleAuthProvider();
+import { auth, googleProvider, signInWithPopup } from './firebase.service';
 
 const FirebaseAuthService = {
 	signInWithGoogle: async () => {
 		try {
-			return await auth.signInWithPopup(googleProvider);
-		} catch(err) {
+			return await signInWithPopup(auth, googleProvider);
+		} catch (err) {
 			console.log(err);
 			return false;
 		}

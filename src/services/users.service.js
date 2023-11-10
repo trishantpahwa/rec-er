@@ -4,12 +4,11 @@ import SessionService from "./session.service";
 const UsersService = {
   login: async () => {
     if (!UsersService.checkSession()) {
-      const res = await FirebaseAuthService.signInWithGoogle();
-      if (res) {
-        const name = res.user.displayName;
-        const email = res.user.email;
+      const result = await FirebaseAuthService.signInWithGoogle();
+      if (result) {
+        const email = result.user.email;
         let user;
-        user = await FirebaseFirestoreService.getRecords(collection, "", [
+        user = await FirebaseFirestoreService.getRecords(collection, [
           "email",
           "==",
           email,
@@ -25,10 +24,8 @@ const UsersService = {
             createdAt: new Date().getTime(),
           });
         user = { ...user, timestamp: new Date().getTime() };
-        const encryptedUser = Buffer.from(JSON.stringify(user)).toString(
-          "base64"
-        );
-        SessionService.set("User", encryptedUser.toString("base64"));
+        const encryptedUser = btoa(JSON.stringify(user));
+        SessionService.set("User", encryptedUser);
         return "LOGGED_IN";
       } else {
         return false;
@@ -41,7 +38,7 @@ const UsersService = {
     let user;
     user = SessionService.get("User");
     if (user) {
-      user = JSON.parse(Buffer.from(user, "base64").toString());
+      user = JSON.parse(atob(user));
       if ((new Date().getTime() - user.timestamp) / 1000 < 86400) return true;
       else {
         UsersService.logout();
@@ -53,7 +50,7 @@ const UsersService = {
     let user;
     user = SessionService.get("User");
     if (user) {
-      user = JSON.parse(Buffer.from(user, "base64").toString());
+      user = JSON.parse(atob(user));
       if ((new Date().getTime() - user.timestamp) / 1000 < 86400)
         return Object.keys(user)[0];
       else {
@@ -66,7 +63,7 @@ const UsersService = {
     let user;
     user = SessionService.get("User");
     if (user) {
-      user = JSON.parse(Buffer.from(user, "base64").toString());
+      user = JSON.parse(atob(user));
       if ((new Date().getTime() - user.timestamp) / 1000 < 86400)
         return Object.values(user)[0].name;
       else {

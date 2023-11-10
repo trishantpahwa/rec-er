@@ -5,10 +5,10 @@ function BlogView(props) {
     <div className="blogView">
       {props.markdownData.map((md, i) => (
         <div key={i}>
-			{console.log(md)}
           <ReactMarkdown className="markdown-to-html">{md}</ReactMarkdown>̦
-          {i < props.markdownData.length-1 && (
+          {i < props.markdownData.length - 1 && (
             <iframe
+              title={props.id}
               className="codepen-iframe"
               scrolling="no"
               src={
@@ -21,7 +21,7 @@ function BlogView(props) {
             >
               See the Pen{" "}
               <a href="https://codepen.io/trishantpahwa/pen/">
-                {props.codePens[i]} Solution {i+1}
+                {props.codePens[i]} Solution {i + 1}
               </a>{" "}
               by Trishant Pahwa (
               <a href="https://codepen.io/trishantpahwa">@trishantpahwa</a>)on{" "}

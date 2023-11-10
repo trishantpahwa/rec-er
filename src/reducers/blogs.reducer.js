@@ -2,7 +2,7 @@ import { BlogsConstants } from '../constants';
 
 const initialState = {};
 
-export default (state = initialState, action) => {
+function blogsReducer(state = initialState, action) {
     switch (action.type) {
         case BlogsConstants.GET_ALL_BLOGS_METADATA_REQUEST:
             return { ...state };
@@ -21,3 +21,5 @@ export default (state = initialState, action) => {
             return state;
     }
 };
+
+export default blogsReducer;

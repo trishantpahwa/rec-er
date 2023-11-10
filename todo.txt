@@ -1,15 +1,29 @@
-1. Markdown reader to html for text and images.
-2. Codepen for live preview of web blogs
-
-
-
-ADD global folder prefix using process.env for the main folder, just for customization.
-
-
-Set background color in of content in yaml file.
-
-
-
-
+Set background color in of content in yaml file, by adding a command: change-background
 
 # Browse by tags, calender search name
+
+
+Add an input for terminal within the blog.
+
+
+```
+.
+.
+.
+Blog Data
+.
+.
+.
+
+----------------------------------------------------------
+|guest $ `command`                                       |
+----------------------------------------------------------
+```
+
+Commands:
+- back: Go back to home page.
+- share: Share the blog.
+
+
+
+We can replace the querying method with AWS Athena.

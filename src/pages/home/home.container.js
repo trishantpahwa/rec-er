@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { useHistory } from 'react-router-dom';
 import figlet from 'figlet';
 import standard from 'figlet/importable-fonts/Standard.js';
 
@@ -11,23 +10,24 @@ import { UsersService } from '../../services';
 import HomeView from './home.view';
 
 function HomeContainer() {
+
 	const dispatch = useDispatch();
-	const blogList = useSelector((state) => !!state.blogs && !!state.blogs.metaData && state.blogs.metaData) || null;
+	const blogList = useSelector((state) => !!state.blogs && !!state.blogs.metaData && state.blogs.metaData) || [];
 
-	const browserHistory = useHistory();
-
-	const [ textArt, setTextArt ] = useState('');
-	const [ command, setCommand ] = useState('');
+	const [textArt, setTextArt] = useState('');
+	const [command, setCommand] = useState('');
 	const commandInput = useRef(null);
-	const [ history, setHistory ] = useState([]);
-	const [ historyIndex, setHistoryIndex ] = useState(0);
-	const [ user, setUser ] = useState(UsersService.getCurrentUserName());
+	const [history, setHistory] = useState([]);
+	const [historyIndex, setHistoryIndex] = useState(0);
+	const [user, setUser] = useState(UsersService.getCurrentUserName());
 
-	let touchPath = 0;
 	let ctrl = false;
 
 	useEffect(() => {
+		let touchPath = 0;
+
 		dispatch(BlogsActions.getAllBlogsAction());
+
 		figlet.parseFont('Standard', standard);
 		figlet.text(
 			'Wrec-er',
@@ -38,7 +38,7 @@ function HomeContainer() {
 				width: 100,
 				whitespaceBreak: true
 			},
-			function(err, data) {
+			function (err, data) {
 				if (err) {
 					console.log('Something went wrong...');
 					console.dir(err);
@@ -48,6 +48,25 @@ function HomeContainer() {
 			}
 		);
 		commandInput.current.focus();
+
+		const _click = () => {
+			commandInput.current.focus();
+		};
+
+		const _touchstart = (e) => {
+			touchPath = 0;
+		};
+
+		const _touchmove = (e) => {
+			touchPath += 1;
+		};
+
+		const _touchend = (e) => {
+			if (touchPath === 0) {
+				commandInput.current.focus();
+			}
+		};
+
 		window.addEventListener('click', _click);
 		window.addEventListener('touchstart', _touchstart);
 		window.addEventListener('touchmove', _touchmove);
@@ -58,25 +77,7 @@ function HomeContainer() {
 			window.removeEventListener('touchmove', _touchmove);
 			window.removeEventListener('touchend', _touchend);
 		};
-	}, []);
-
-	const _click = () => {
-		commandInput.current.focus();
-	};
-
-	const _touchstart = (e) => {
-		touchPath = 0;
-	};
-
-	const _touchmove = (e) => {
-		touchPath += 1;
-	};
-
-	const _touchend = (e) => {
-		if (touchPath === 0) {
-			commandInput.current.focus();
-		}
-	};
+	}, [dispatch]);
 
 	const checkInterrupt = async (e) => {
 		const key = e.key;
@@ -121,8 +122,8 @@ function HomeContainer() {
 						};
 						const _args = args.filter((arg) => Object.keys(argMap).includes(arg));
 						if (!!args && args.length > _args.length) return 'Invalid args';
-						else
-							return [
+						else {
+							if (Object.keys(blogList).length > 0) return [
 								'BlogID\t',
 								..._args.map((arg) => {
 									return `${argDefs[arg]}\t`;
@@ -141,6 +142,8 @@ function HomeContainer() {
 									})
 									.join('\n')
 							];
+							else return 'No blogs found.';
+						}
 					},
 					helpText: 'Lists all blogs(Linux-style).\n\t-T: Title\n\t-t: DateTime\n\t-a: Access'
 				},
@@ -149,8 +152,9 @@ function HomeContainer() {
 						return Object.keys(cases)
 							.map((_case) => {
 								if (_case !== '') {
+									console.log(_case) // continue here
 									return '> ' + _case + ': ' + cases[_case].helpText;
-								}
+								} else return '';
 							})
 							.join('\n')
 							.trim();
@@ -159,7 +163,7 @@ function HomeContainer() {
 				},
 				open: {
 					func: (args) => {
-						if (Object.keys(blogList).includes(args[0])) browserHistory.push(`/blog/${args[0]}`);
+						if (Object.keys(blogList).includes(args[0])) window.location = `/blog/${args[0]}`;
 						else return 'Invalid BlogID entered.h';
 					},
 					helpText: 'Opens the blog'
@@ -187,7 +191,7 @@ function HomeContainer() {
 				},
 				converse: {
 					func: async (args) => {
-						if(!UsersService.checkSession()) {
+						if (!UsersService.checkSession()) {
 							return 'You must be logged in to converse.'
 						}
 						const argMap = {
@@ -205,9 +209,9 @@ function HomeContainer() {
 						var _args = args.filter((arg) => Object.keys(argMap).includes(`-${arg[0]}`));
 						if (!!args && args.length > _args.length) return 'Invalid args';
 						const _argsMap = {};
-						_args.map((_arg) => {
-							_argsMap[_arg[0]] = _arg.slice(1, _arg.length).trim();
-						});
+						for (var i = 0; i < _args.length; i++) {
+							_argsMap[_args[i][0]] = _args[i].slice(1, _args[i].length).trim();
+						}
 						if (_argsMap['v'] === '') {
 							const conversations = await dispatch(
 								ConversationsActions.getAllConversationsOfBlog(_argsMap['b'])
@@ -259,10 +263,10 @@ function HomeContainer() {
 		const key = e.key;
 		if (key === 'Enter') {
 			e.preventDefault();
-			await (async function() {
+			await (async function () {
 				const _output = await executeCommand(command);
 				setHistory((_history) => {
-					return [ ..._history, { command: `${user} $ ${command}`, output: _output } ];
+					return [..._history, { command: `${user} $ ${command}`, output: _output }];
 				});
 			})();
 			if (command.slice(0, 4) !== 'open')

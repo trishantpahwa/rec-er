@@ -10,12 +10,13 @@ const ConversationsService = {
 			timestamp: new Date().getTime()
 		}),
 	getByBlog: async (blogID) => {
-		const conversations = await FirebaseFirestoreService.getRecords(collection, '', [ 'blogID', '==', blogID ]);
+		const conversations = await FirebaseFirestoreService.getRecords(collection, ['blogID', '==', blogID]);
 		const userIDs = {};
 		Object.keys(conversations).map((conversation) => {
 			if (userIDs[conversations[conversation].userID])
 				userIDs[conversations[conversation].userID].push(conversation);
-			else userIDs[conversations[conversation].userID] = [ conversation ];
+			else userIDs[conversations[conversation].userID] = [conversation];
+			return null;
 		});
 		const users = {};
 		await Promise.all(

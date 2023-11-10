@@ -2,8 +2,7 @@ import { ConversationsConstants } from '../constants';
 
 const initialState = {};
 
-// eslint-disable-next-line import/no-anonymous-default-export
-export default (state = initialState, action) => {
+function conversationsReducer(state = initialState, action) {
 	switch (action.type) {
 		case ConversationsConstants.CREATE_CONVERSATION_REQUEST:
 			return { ...state };
@@ -34,3 +33,5 @@ export default (state = initialState, action) => {
 			return state;
 	}
 };
+
+export default conversationsReducer;
