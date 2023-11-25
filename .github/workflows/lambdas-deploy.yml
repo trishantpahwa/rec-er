@@ -26,6 +26,7 @@ jobs:
         env:
           CI: true
         run: |
+          cd lambdas/search 
           npm ci
       - name: deploy search
         run: |

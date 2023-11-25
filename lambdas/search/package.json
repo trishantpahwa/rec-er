@@ -10,7 +10,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
+  "author": "Trishant Pahwa",
   "license": "ISC",
   "dependencies": {
     "aws-sdk": "^2.1502.0",
