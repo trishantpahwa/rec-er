@@ -34,3 +34,4 @@ jobs:
           npm ci
           npm run build
           npm run zip:lambda
+          npm run deploy:lambda
