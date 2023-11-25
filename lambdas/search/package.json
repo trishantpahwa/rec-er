@@ -6,7 +6,7 @@
   "scripts": {
     "build": "ncc build index.ts",
     "zip:lambda": "zip -j deploy.zip ./dist/*",
-    "deploy:lambda": "aws lambda update-function-code --function-name=wrec-er~serach --zip-file=fileb://deploy.zip",
+    "deploy:lambda": "aws lambda update-function-code --function-name=wrec-er_serach --zip-file=fileb://deploy.zip",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
