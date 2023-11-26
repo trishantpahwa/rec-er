@@ -6,12 +6,13 @@ const s3 = new S3();
 export const handler: Handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResultV2> => {
     try {
         console.log(event);
-        const buckets = await s3.listBuckets().promise();
-        console.log(buckets);
+        const objects = await s3.listObjectsV2({ Bucket: 'wrec-er' }).promise();
+        console.log(objects);
         return {
             statusCode: 200,
             body: JSON.stringify({
-                message: "Hello World"
+                message: "Hello World",
+                data: objects
             })
         };
     } catch (err) {
