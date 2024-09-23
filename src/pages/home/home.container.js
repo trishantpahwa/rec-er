@@ -369,6 +369,12 @@ function HomeContainer() {
                     },
                     helpText: "Changes the background of the terminal.",
                 },
+                "exit": {
+                    func: (args) => {
+                        window.close();
+                    },
+                    helpText: "Exits the terminal.",
+                }
             };
             switch (inputCommand) {
                 case inputCommand:
