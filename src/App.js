@@ -13,7 +13,7 @@ function App() {
 		window.gtag('event', 'page_view', {
 			page_location: window.location.href,
 			page_path: window.location.pathname,
-			page_title: 'Wrec-er ' + window.location.pathname
+			page_title: 'Rec-er ' + window.location.pathname
 		});
 	}
 

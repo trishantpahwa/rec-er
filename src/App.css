@@ -14,7 +14,6 @@ body {
 }
 
 .Home {
-	color: green;
 	top: 0;
 	left: 0;
 	height: 100%;
@@ -45,8 +44,10 @@ body {
 }
 
 ::-webkit-scrollbar {
-	width: 0; /* Remove scrollbar space */
-	background: transparent; /* Optional: just make scrollbar invisible */
+	width: 0;
+	/* Remove scrollbar space */
+	background: transparent;
+	/* Optional: just make scrollbar invisible */
 }
 
 .history {
@@ -70,7 +71,7 @@ body {
 	border: none;
 	background: transparent;
 	outline: 0;
-	color: green;
+	/* color: green; */
 	font-size: 18px;
 	font-family: monospace;
 	height: 100%;
@@ -97,12 +98,15 @@ body {
 	.text-art {
 		font-size: 8px;
 	}
+
 	.Home {
 		font-size: 12px;
 	}
+
 	.description-text-art {
 		font-size: 8px;
 	}
+
 	#commandInput {
 		margin-left: 0em;
 		font-size: 12px;
