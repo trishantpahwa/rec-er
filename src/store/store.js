@@ -1,5 +1,5 @@
 import { createStore, applyMiddleware, compose } from 'redux';
-import thunkMiddleware from 'redux-thunk';
+import { thunk } from 'redux-thunk';
 // import { createLogger } from 'redux-logger';  // Remove logger
 import rootReducer from '../reducers';
 
@@ -10,7 +10,7 @@ export default createStore(
   rootReducer,
   composeEnhancers(
     applyMiddleware(
-      thunkMiddleware,
+      thunk,
       // loggerMiddleware
     )
   )
