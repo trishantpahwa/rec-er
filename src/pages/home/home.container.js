@@ -9,7 +9,7 @@ import {
     ConversationsActions,
     UsersActions,
 } from "../../actions";
-import { UsersService } from "../../services";
+import { LocalStorageService, UsersService } from "../../services";
 
 import HomeView from "./home.view";
 
@@ -32,6 +32,13 @@ function HomeContainer() {
     const [backgroundColor, setBackgroundColor] = useState("black");
 
     let ctrl = false;
+
+    useEffect(() => {
+        const color = LocalStorageService.get("color");
+        const backgroundColor = LocalStorageService.get("background-color");
+        if (color) setColor(color);
+        if (backgroundColor) setBackgroundColor(backgroundColor);
+    }, []);
 
     useEffect(() => {
         let touchPath = 0;
@@ -345,6 +352,7 @@ function HomeContainer() {
                         if (args.length !== 1) return "Invalid args";
                         else {
                             const color = args[0];
+                            LocalStorageService.set("color", color);
                             setColor(color);
                         }
                     },
@@ -355,6 +363,7 @@ function HomeContainer() {
                         if (args.length !== 1) return "Invalid args";
                         else {
                             const backgroundColor = args[0];
+                            LocalStorageService.set("background-color", backgroundColor);
                             setBackgroundColor(backgroundColor); // Hash code check
                         }
                     },
