@@ -2,10 +2,10 @@ import ReactMarkdown from "react-markdown";
 
 function BlogView(props) {
   return (
-    <div className="blogView">
+    <div className="blogView" style={{ color: localStorage.getItem("color"), backgroundColor: localStorage.getItem("background-color") }}>
       {props.markdownData.map((md, i) => (
         <div key={i}>
-          <ReactMarkdown className="markdown-to-html">{md}</ReactMarkdown>̦
+          <ReactMarkdown>{md}</ReactMarkdown>̦
           {i < props.markdownData.length - 1 && (
             <iframe
               title={props.id}
