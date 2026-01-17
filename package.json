@@ -8,27 +8,17 @@
     "dotenv": "^17.2.3",
     "figlet": "^1.9.4",
     "firebase": "^12.7.0",
+    "next": "^15.1.6",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
     "react-markdown": "^10.1.0",
-    "react-redux": "^9.2.0",
-    "react-router-dom": "^7.11.0",
-    "react-scripts": "^5.0.1",
-    "redux": "^5.0.1",
-    "redux-thunk": "^3.1.0",
     "yaml": "^2.8.2"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
   },
   "browserslist": {
     "production": [

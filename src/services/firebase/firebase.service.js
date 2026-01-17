@@ -11,7 +11,10 @@ const googleProvider = new GoogleAuthProvider();
 
 const db = getFirestore();
 
-getPerformance(app);
+// Only initialize performance monitoring on the client side
+if (typeof window !== 'undefined') {
+  getPerformance(app);
+}
 
 
 export { auth, db, googleProvider, signInWithPopup };
