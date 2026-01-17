@@ -2,7 +2,7 @@ import { initializeApp } from "firebase/app";
 import { getPerformance } from "firebase/performance";
 import { GoogleAuthProvider, getAuth, signInWithPopup } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
-import { firebaseConfig } from '../../store/firebase.config';
+import { firebaseConfig } from '../../config/firebase.config';
 
 const app = initializeApp(firebaseConfig);
 

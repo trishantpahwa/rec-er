@@ -1,5 +1,5 @@
 import Script from 'next/script'
-import '../src/App.css'
+import './globals.css'
 
 export const metadata = {
   title: 'Rec-er',

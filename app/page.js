@@ -4,15 +4,22 @@ import { useEffect, useRef, useState } from "react";
 import figlet from "figlet";
 import standard from "figlet/importable-fonts/Standard.js";
 import { BlogsService, ConversationsService, LocalStorageService, UsersService } from "../src/services";
-import "../src/old_pages/home/Home.css";
 
 function HomeView(props) {
+    const [userAgent, setUserAgent] = useState('');
+
+    useEffect(() => {
+        if (typeof navigator !== 'undefined') {
+            setUserAgent(navigator.userAgent);
+        }
+    }, []);
+
     return (
         <div
             className="Home"
             style={{ color: props.color, background: props.backgroundColor }}
         >
-            {typeof navigator !== 'undefined' && navigator.userAgent}
+            {userAgent}
             <br />
             <div className="text-art">{props.textArt}</div>
             <div className="description-text-art">
