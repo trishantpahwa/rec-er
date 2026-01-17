@@ -120,7 +120,7 @@ function HomePage() {
                     console.dir(err);
                     return;
                 }
-                setTextArt(data.split());
+                setTextArt(data);
             }
         );
 
