@@ -1,1 +1,14 @@
-{"stage-1-files":[".env","src/store/firebase.config.js"],"uploaded-files":["src/store/firebase.config.js"]}
+{
+  "stage-1-files": {
+    ".env": {
+      "mime-type": "application/octet-stream",
+      "hash": "1fcc976d7f66675ef0dac8cbdc51e820"
+    }
+  },
+  "uploaded-files": {
+    ".env": {
+      "mime-type": "application/octet-stream",
+      "hash": "1fcc976d7f66675ef0dac8cbdc51e820"
+    }
+  }
+}
