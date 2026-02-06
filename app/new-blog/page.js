@@ -5,10 +5,45 @@ import { useState } from 'react';
 
 export default function BlogEditor() {
     const [code, setCode] = useState("");
+    const [title, setTitle] = useState("");
+    const [isPublishing, setIsPublishing] = useState(false);
 
     const handleEditorChange = (value) => {
         setCode(value || '');
     };
+
+    const publishBlog = async () => {
+        if (!code.trim()) {
+            alert('Please write some content before publishing!');
+            return;
+        }
+
+        setIsPublishing(true);
+        try {
+            const content = code;
+            const response = await fetch('/api/publish-blog', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ title, content }),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                alert(`Blog published successfully!\nTitle: ${title}\nID: ${data.id}`);
+                setCode(''); // Clear editor after successful publish
+            } else {
+                alert(`Failed to publish blog: ${data.error}\n${data.details || ''}`);
+            }
+        } catch (error) {
+            console.error('Error publishing blog:', error);
+            alert(`Error publishing blog: ${error.message}`);
+        } finally {
+            setIsPublishing(false);
+        }
+    }
 
     return (
         <div className="h-screen w-screen flex flex-col bg-slate-500">
@@ -19,11 +54,12 @@ export default function BlogEditor() {
                         <h1 className="text-xl font-semibold text-slate-900">Blog Editor</h1>
                     </div>
                     <div className="flex items-center space-x-3">
-                        <button className="px-4 py-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-md transition-colors font-medium">
-                            Save Draft
-                        </button>
-                        <button className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors font-medium">
-                            Publish
+                        <button
+                            onClick={publishBlog}
+                            disabled={isPublishing}
+                            className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors font-medium disabled:bg-indigo-400 disabled:cursor-not-allowed"
+                        >
+                            {isPublishing ? 'Publishing...' : 'Publish'}
                         </button>
                     </div>
                 </div>
@@ -37,8 +73,9 @@ export default function BlogEditor() {
                         <h2 className="text-sm font-medium text-slate-300">Editor</h2>
                     </div>
                     <div className="flex-1 p-4">
+                        <input type="text" placeholder="Blog Title" value={title} onChange={(e) => setTitle(e.target.value)} className="w-11/12 rounded-lg mb-4 p-2 border border-slate-700 bg-slate-800 text-slate-200" />
                         <Editor
-                            height="50vh"
+                            height="99vh"
                             width="50vw"
                             theme="vs-dark"
                             value={code}
