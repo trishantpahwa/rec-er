@@ -1,19 +1,24 @@
-import YAML from 'yaml';
+import YAML from 'yaml'; // Remove package => @trishantpahwa | 2026-02-06 20:30:01
 
 import { S3Service } from './aws';
 
 const BlogsService = {
     getMetaDataList: async () => {
-        const blogsList = await S3Service.listObjects('meta');
-        let _blogs = await Promise.all(blogsList.map(async blog => {
-            const file = await S3Service.getObject(blog);
-            return YAML.parse(file.Body.toString());
-        }));
-        let blogs = {};
-        for (var i = 0; i < blogsList.length; i++) {
-            blogs[blogsList[i].split('/')[1].split('.')[0]] = _blogs[i];
+        try {
+            const response = await fetch('/api/blog/metadata');
+            const data = await response.json();
+            const blogs = {};
+            for (const item of data) {
+                let blogMeta = {
+                    Title: data.title,
+                };
+                blogs[blogId] = blogMeta;
+            }
+            return blogs;
+        } catch (error) {
+            console.error('Error fetching blog metadata:', error);
+            return {};
         }
-        return blogs;
     },
     getBlogFiles: async (blog) => {
         let filesList = await S3Service.listObjects(blog);
