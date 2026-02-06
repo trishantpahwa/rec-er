@@ -8,9 +8,9 @@ const BlogsService = {
             const blogs = {};
             for (const item of data) {
                 let blogMeta = {
-                    Title: data.title,
+                    Title: item.title,
                 };
-                blogs[blogId] = blogMeta;
+                blogs[item.id] = blogMeta;
             }
             return blogs;
         } catch (error) {
