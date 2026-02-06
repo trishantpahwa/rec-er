@@ -67,6 +67,7 @@ function HomeView(props) {
 
 function HomePage() {
     const [blogList, setBlogList] = useState([]);
+    const [loadingBlogs, setLoadingBlogs] = useState(true);
     const [textArt, setTextArt] = useState("");
     const [command, setCommand] = useState("");
     const commandInput = useRef(null);
@@ -97,6 +98,7 @@ function HomePage() {
             try {
                 const metaData = await BlogsService.getMetaDataList();
                 setBlogList(metaData || []);
+                setLoadingBlogs(false);
             } catch (err) {
                 console.log('Error fetching blogs:', err);
             }
@@ -267,7 +269,6 @@ function HomePage() {
                         return Object.keys(cases)
                             .map((_case) => {
                                 if (_case !== "") {
-                                    console.log(_case);
                                     return (
                                         "> " +
                                         _case +
@@ -484,7 +485,7 @@ function HomePage() {
 
     const checkCommand = async (e) => {
         const key = e.key;
-        if (key === "Enter") {
+        if (key === "Enter" && !loadingBlogs) {
             e.preventDefault();
             await (async function () {
                 const _output = await executeCommand(command);

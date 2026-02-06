@@ -49,8 +49,8 @@ function BlogView(props) {
 }
 
 function BlogPage({ params }) {
-  const [blogFiles, setBlogFiles] = useState(null);
-  const [data, setData] = useState([]);
+  const [blogData, setBlogData] = useState(null);
+  const [blogContent, setBlogContent] = useState([]);
   const [codePens, setCodePens] = useState([]);
   const [id, setId] = useState(null);
 
@@ -75,30 +75,28 @@ function BlogPage({ params }) {
 
   useEffect(() => {
     if (id) {
-      const fetchBlogFiles = async () => {
+      const fetchBlog = async () => {
         try {
-          const files = await BlogsService.getBlogFiles(id);
-          setBlogFiles(files);
+          const data = await BlogsService.getBlog(id);
+          setBlogData(data);
         } catch (err) {
           console.log('Error fetching blog files:', err);
         }
       };
-      fetchBlogFiles();
+      fetchBlog();
     }
   }, [id]);
 
   useEffect(() => {
-    if (blogFiles) {
-      setCodePens(getCodePens(blogFiles["data.md"].toString()));
-      setData(
-        blogFiles["data.md"].toString().split(/<codepen src=".*" \/>/)
-      );
+    if (blogData) {
+      setCodePens(getCodePens(blogData.content.toString()));
+      setBlogContent(blogData.content.split(/<codepen src=".*" \/>/));
     }
-  }, [blogFiles]);
+  }, [blogData]);
 
   return (
     <div className="App">
-      <BlogView id={id} markdownData={data} codePens={codePens} />
+      <BlogView id={id} markdownData={blogContent} codePens={codePens} />
     </div>
   );
 }

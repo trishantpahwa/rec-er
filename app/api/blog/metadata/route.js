@@ -7,21 +7,8 @@ export async function GET() {
             url: process.env.QDRANT_URL,
             apiKey: process.env.QDRANT_API_KEY,
         });
-        const collectionName = process.env.QDRANT_COLLECTION_NAME;
-        // Check if collection exists
-        try {
-            await qdrantClient.getCollection(collectionName);
-        } catch (error) {
-            if (error.status === 403) {
-                return new Response(JSON.stringify({ error: 'Authentication failed. Please check your QDRANT_API_KEY.' }), { status: 500 });
-            } else if (error.status === 404) {
-                return new Response(JSON.stringify({ error: `Collection '${collectionName}' does not exist. Please create it first.` }), { status: 500 });
-            } else {
-                return new Response(JSON.stringify({ error: 'Failed to access Qdrant collection', details: error.message }), { status: 500 });
-            }
-        }
         // Fetch all points (metadata) from the collection
-        const points = await qdrantClient.scroll(collectionName, {
+        const points = await qdrantClient.scroll(process.env.QDRANT_COLLECTION_NAME, {
             limit: 10000, // Adjust as needed
             with_payload: true, // Include payload to get title
         });
