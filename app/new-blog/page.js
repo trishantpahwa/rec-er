@@ -1,12 +1,14 @@
 'use client';
 import Editor from '@monaco-editor/react';
 import ReactMarkdown from 'react-markdown';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 
 export default function BlogEditor() {
     const [code, setCode] = useState("");
     const [title, setTitle] = useState("");
     const [isPublishing, setIsPublishing] = useState(false);
+    const [isUploading, setIsUploading] = useState(false);
+    const fileInputRef = useRef(null);
 
     const handleEditorChange = (value) => {
         setCode(value || '');
@@ -45,8 +47,69 @@ export default function BlogEditor() {
         }
     }
 
+    const handleImageUpload = async (event) => {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        // Validate file type
+        const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+        if (!allowedTypes.includes(file.type)) {
+            alert('Invalid file type. Only JPEG, PNG, GIF, and WebP are allowed.');
+            return;
+        }
+
+        // Validate file size (5MB limit)
+        const maxSize = 5 * 1024 * 1024; // 5MB
+        if (file.size > maxSize) {
+            alert('File too large. Maximum size is 5MB.');
+            return;
+        }
+
+        setIsUploading(true);
+        try {
+            const formData = new FormData();
+            formData.append('image', file);
+
+            const response = await fetch('/api/upload/image', {
+                method: 'POST',
+                body: formData,
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                // Insert image markdown at cursor position or end of document
+                const imageMarkdown = `![${data.fileName}](${data.imageUrl})\n`;
+                setCode(prevCode => prevCode + imageMarkdown);
+            } else {
+                alert(`Failed to upload image: ${data.error}`);
+            }
+        } catch (error) {
+            alert(`Error uploading image: ${error.message}`);
+        } finally {
+            setIsUploading(false);
+            // Reset file input
+            if (fileInputRef.current) {
+                fileInputRef.current.value = '';
+            }
+        }
+    };
+
+    const triggerImageUpload = () => {
+        fileInputRef.current?.click();
+    };
+
     return (
         <div className="h-screen w-screen flex flex-col bg-slate-500">
+            {/* Hidden file input */}
+            <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleImageUpload}
+                accept="image/jpeg,image/png,image/gif,image/webp"
+                style={{ display: 'none' }}
+            />
+
             {/* Clean Header */}
             <header className="bg-white border-b border-slate-200 px-6 py-4 shadow-sm">
                 <div className="flex items-center justify-between">
@@ -54,6 +117,14 @@ export default function BlogEditor() {
                         <h1 className="text-xl font-semibold text-slate-900">Blog Editor</h1>
                     </div>
                     <div className="flex items-center space-x-3">
+                        <button
+                            onClick={triggerImageUpload}
+                            disabled={isUploading}
+                            className="px-4 py-2 bg-slate-600 text-white rounded-md hover:bg-slate-700 transition-colors font-medium disabled:bg-slate-400 disabled:cursor-not-allowed flex items-center space-x-2"
+                        >
+                            <span>📷</span>
+                            <span>{isUploading ? 'Uploading...' : 'Upload Image'}</span>
+                        </button>
                         <button
                             onClick={publishBlog}
                             disabled={isPublishing}
