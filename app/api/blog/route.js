@@ -97,3 +97,53 @@ export async function POST(request) {
         );
     }
 }
+
+export async function GET(request) {
+    const searchQuery = request.nextUrl.searchParams.get('search') || '';
+    const limit = parseInt(request.nextUrl.searchParams.get('limit') || '5', 5);
+    if (!searchQuery) return NextResponse.json({ error: 'Search query is required' }, { status: 400 });
+
+    try {
+        const qdrantClient = new QdrantClient({
+            url: process.env.QDRANT_URL,
+            apiKey: process.env.QDRANT_API_KEY,
+        });
+        const collectionName = process.env.QDRANT_COLLECTION_NAME;
+
+        // If search query is provided, perform vector search
+
+        // Generate embedding for search query
+        const embedder = await getExtractor();
+        const output = await embedder(searchQuery, { pooling: 'mean', normalize: true });
+        const queryVector = Array.from(output.data);
+
+        // Perform vector search
+        const results = await qdrantClient.query(collectionName, {
+            query: queryVector,
+            limit: limit,
+            with_payload: true,
+        });
+
+        // Format results
+        const blogs = results.points.map(point => ({
+            id: point.id,
+            title: point.payload.title,
+            content: point.payload.content,
+            createdAt: point.payload.id,
+            score: point.score,
+        }));
+
+        return NextResponse.json({
+            success: true,
+            query: searchQuery,
+            count: blogs.length,
+            results: blogs,
+        });
+    } catch (error) {
+        console.error('Error fetching blogs:', error);
+        return NextResponse.json(
+            { error: 'Failed to fetch blogs', details: error.message },
+            { status: 500 }
+        );
+    }
+}

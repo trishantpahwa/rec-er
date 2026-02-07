@@ -1,7 +1,7 @@
 const BlogsService = {
-    getBlog: async (blog) => {
+    searchBlog: async (searchQuery) => {
         try {
-            const response = await fetch(`/api/blog/${blog}`);
+            const response = await fetch(`/api/blog?search=${encodeURIComponent(searchQuery)}`);
             const data = await response.json();
             return data;
         } catch (error) {
