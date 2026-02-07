@@ -1,0 +1,12 @@
+@import "tailwindcss";
+
+/* Hide scrollbar */
+::-webkit-scrollbar {
+	width: 0;
+	background: transparent;
+}
+
+/* Inherit link colors in blog view */
+a {
+	color: inherit;
+}

@@ -1,3 +1,7 @@
 # https://www.robotstxt.org/robotstxt.html
 User-agent: *
-Disallow:
+Allow: /
+Disallow: /api/
+Disallow: /new-blog
+
+Sitemap: https://rec-er.trishantpahwa.com/sitemap.xml
