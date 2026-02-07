@@ -162,24 +162,34 @@ export default function BlogEditor() {
             />
 
             {/* Clean Header */}
-            <header className="bg-white border-b border-slate-200 px-6 py-4 shadow-sm">
-                <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-3">
-                        <h1 className="text-xl font-semibold text-slate-900">Blog Editor</h1>
+            <header className="bg-gradient-to-r from-indigo-600 to-sky-500 px-6 py-4 shadow-lg">
+                <div className="max-w-7xl mx-auto flex items-center justify-between">
+                    <div className="flex items-center space-x-4">
+                        <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center text-white font-bold">BE</div>
+                        <div>
+                            <h1 className="text-white text-lg font-semibold">New Blog</h1>
+                            <p className="text-indigo-100 text-sm">Write, preview and publish beautiful posts</p>
+                        </div>
                     </div>
+
                     <div className="flex items-center space-x-3">
+                        <div className="hidden sm:flex items-center bg-white/10 text-white px-3 py-1 rounded-md">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor"><path d="M8 9a3 3 0 100-6 3 3 0 000 6z"/><path d="M2 13a6 6 0 1112 0v1H2v-1z"/></svg>
+                            <span className="text-sm">You</span>
+                        </div>
+
                         <button
                             onClick={triggerImageUpload}
                             disabled={isUploading}
-                            className="px-4 py-2 bg-slate-600 text-white rounded-md hover:bg-slate-700 transition-colors font-medium disabled:bg-slate-400 disabled:cursor-not-allowed flex items-center space-x-2"
+                            className="hidden sm:inline-flex items-center gap-2 px-3 py-2 bg-white text-slate-800 rounded-md hover:shadow-md transition"
                         >
-                            <span>📷</span>
-                            <span>{isUploading ? 'Uploading...' : 'Upload Image'}</span>
+                            📷 Upload
                         </button>
+
                         <button
                             onClick={publishBlog}
                             disabled={isPublishing}
-                            className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors font-medium disabled:bg-indigo-400 disabled:cursor-not-allowed"
+                            className="inline-flex items-center px-4 py-2 bg-white text-indigo-600 rounded-full font-semibold hover:shadow-xl transition"
                         >
                             {isPublishing ? 'Publishing...' : 'Publish'}
                         </button>
@@ -194,29 +204,40 @@ export default function BlogEditor() {
                     <div className="px-4 py-3 bg-slate-800 border-b border-slate-700">
                         <h2 className="text-sm font-medium text-slate-300">Editor</h2>
                     </div>
-                    <div className="flex-1 p-4">
-                        <input type="text" placeholder="Blog Title" value={title} onChange={(e) => setTitle(e.target.value)} className="w-11/12 rounded-lg mb-4 p-2 border border-slate-700 bg-slate-800 text-slate-200" />
-                        <Editor
-                            height="99vh"
-                            width="50vw"
-                            theme="vs-dark"
-                            value={code}
-                            onChange={handleEditorChange}
-                            defaultLanguage="markdown"
-                            options={{
-                                minimap: { enabled: false },
-                                fontSize: 14,
-                                lineNumbers: "on",
-                                scrollBeyondLastLine: false,
-                                automaticLayout: true,
-                                padding: { top: 16, bottom: 16 },
-                                wordWrap: "on",
-                                tabSize: 2,
-                                insertSpaces: true,
-                                smoothScrolling: true,
-                                cursorBlinking: "smooth",
-                            }}
-                        />
+                    <div className="flex-1 p-6">
+                        <div className="bg-slate-800 rounded-xl shadow-md p-4 h-full flex flex-col">
+                            <div className="flex items-center justify-between mb-4">
+                                <input type="text" placeholder="Enter a catchy title..." value={title} onChange={(e) => setTitle(e.target.value)} className="flex-1 mr-4 rounded-md p-3 bg-slate-900 border border-slate-700 text-slate-200 placeholder-slate-500" />
+                                <div className="text-slate-400 text-sm">
+                                    <div>{code.split(/\s+/).filter(Boolean).length} words</div>
+                                    <div className="text-xs text-slate-500">{code.length} chars</div>
+                                </div>
+                            </div>
+
+                            <div className="flex-1 border border-slate-700 rounded-md overflow-hidden">
+                                <Editor
+                                    height="calc(100vh - 220px)"
+                                    width="100%"
+                                    theme="vs-dark"
+                                    value={code}
+                                    onChange={handleEditorChange}
+                                    defaultLanguage="markdown"
+                                    options={{
+                                        minimap: { enabled: false },
+                                        fontSize: 14,
+                                        lineNumbers: "on",
+                                        scrollBeyondLastLine: false,
+                                        automaticLayout: true,
+                                        padding: { top: 16, bottom: 16 },
+                                        wordWrap: "on",
+                                        tabSize: 2,
+                                        insertSpaces: true,
+                                        smoothScrolling: true,
+                                        cursorBlinking: "smooth",
+                                    }}
+                                />
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -251,35 +272,39 @@ export default function BlogEditor() {
 
             {/* Publish Confirmation Modal */}
             {showPublishModal && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white p-8 rounded-lg shadow-md max-w-md w-full mx-4">
-                        <h2 className="text-xl font-semibold mb-4">Confirm Publish</h2>
-                        <p className="mb-4">Enter the publish password to confirm publishing this blog.</p>
-                        <form onSubmit={handlePublishConfirm}>
-                            <input
-                                type="password"
-                                value={publishPassword}
-                                onChange={(e) => setPublishPassword(e.target.value)}
-                                className="w-full p-2 border border-gray-300 rounded mb-4"
-                                placeholder="Publish Password"
-                                autoFocus
-                            />
-                            <div className="flex space-x-2">
-                                <button
-                                    type="button"
-                                    onClick={() => { setShowPublishModal(false); setPublishPassword(""); }}
-                                    className="flex-1 px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400"
-                                >
-                                    Cancel
-                                </button>
-                                <button
-                                    type="submit"
-                                    className="flex-1 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
-                                >
-                                    Publish
-                                </button>
-                            </div>
-                        </form>
+                <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
+                    <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full mx-4 overflow-hidden">
+                        <div className="p-6 bg-gradient-to-r from-indigo-600 to-sky-500 text-white">
+                            <h2 className="text-2xl font-semibold">Confirm Publish</h2>
+                            <p className="text-indigo-100 mt-1">Enter the publish password to confirm publishing this blog.</p>
+                        </div>
+                        <div className="p-6">
+                            <form onSubmit={handlePublishConfirm}>
+                                <input
+                                    type="password"
+                                    value={publishPassword}
+                                    onChange={(e) => setPublishPassword(e.target.value)}
+                                    className="w-full p-3 border border-slate-200 rounded-md mb-4"
+                                    placeholder="Publish Password"
+                                    autoFocus
+                                />
+                                <div className="flex space-x-3">
+                                    <button
+                                        type="button"
+                                        onClick={() => { setShowPublishModal(false); setPublishPassword(""); }}
+                                        className="flex-1 px-4 py-2 bg-slate-100 text-slate-700 rounded-md hover:bg-slate-200"
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        className="flex-1 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 shadow-md"
+                                    >
+                                        Publish Now
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
             )}
