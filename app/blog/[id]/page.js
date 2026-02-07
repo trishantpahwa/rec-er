@@ -1,67 +1,74 @@
-'use client';
+import { QdrantClient } from '@qdrant/js-client-rest';
+import BlogViewClient from "./BlogViewClient";
 
-import { useEffect, useState } from "react";
-import ReactMarkdown from "react-markdown";
-import { BlogsService } from "../../../src/services";
+// Generate dynamic metadata for SEO
+export async function generateMetadata({ params }) {
+  const unwrappedParams = await params;
+  const id = unwrappedParams.id;
 
-function BlogView(props) {
-  const [color, setColor] = useState("green");
-  const [backgroundColor, setBackgroundColor] = useState("black");
+  try {
+    // Fetch directly from Qdrant
+    const qdrantClient = new QdrantClient({
+      url: process.env.QDRANT_URL,
+      apiKey: process.env.QDRANT_API_KEY,
+    });
 
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      setColor(localStorage.getItem("color") || "green");
-      setBackgroundColor(localStorage.getItem("background-color") || "black");
+    const numericId = !isNaN(id) ? Number(id) : id;
+    const result = await qdrantClient.retrieve(process.env.QDRANT_COLLECTION_NAME, { ids: [numericId] });
+    const blog = result[0];
+
+    if (!blog) {
+      return {
+        title: 'Blog Post | Rec-er',
+        description: "Trishant Pahwa's blog, journals, records, and researches",
+      };
     }
-  }, []);
 
-  return (
-    <div className="absolute top-0 left-0 right-0 bottom-0 min-h-screen text-lg font-mono overflow-y-auto overflow-x-hidden whitespace-pre-wrap break-words" style={{ color: color, backgroundColor: backgroundColor }}>
-      {props.markdownData.map((md, i) => (
-        <div key={i}>
-          <ReactMarkdown>{md}</ReactMarkdown>
-          {i < props.markdownData.length - 1 && (
-            <iframe
-              title={props.id}
-              className="h-[65vh] w-[85vw]"
-              scrolling="no"
-              src={
-                `https://codepen.io/trishantpahwa/embed/${props.codePens[i]}?default-tab=js%2Cresult`
-              }
-              frameBorder="no"
-              loading="lazy"
-              allowtransparency="true"
-              allowFullScreen={true}
-            >
-              See the Pen{" "}
-              <a href="https://codepen.io/trishantpahwa/pen/">
-                {props.codePens[i]} Solution {i + 1}
-              </a>{" "}
-              by Trishant Pahwa (
-              <a href="https://codepen.io/trishantpahwa">@trishantpahwa</a>) on{" "}
-              <a href="https://codepen.io">CodePen</a>.
-            </iframe>
-          )}
-        </div>
-      ))}
-    </div>
-  );
+    const title = blog.payload.title || `Blog Post ${id}`;
+    const description = blog.payload.content?.substring(0, 160).replace(/[#*`]/g, '') || "Read this blog post on Rec-er";
+
+    return {
+      title: `${title} | Rec-er - Trishant Pahwa's Blog`,
+      description: description,
+      keywords: blog.payload.tags?.join(', ') || 'blog, programming, tech, coding, development',
+      authors: [{ name: 'Trishant Pahwa' }],
+      creator: 'Trishant Pahwa',
+      publisher: 'Trishant Pahwa',
+      openGraph: {
+        title: title,
+        description: description,
+        url: `https://rec-er.trishantpahwa.com/blog/${id}`,
+        siteName: 'Rec-er',
+        type: 'article',
+        publishedTime: blog.payload.createdAt || new Date().toISOString(),
+        authors: ['Trishant Pahwa'],
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: title,
+        description: description,
+        creator: '@trishantpahwa',
+      },
+      alternates: {
+        canonical: `https://rec-er.trishantpahwa.com/blog/${id}`,
+      },
+    };
+  } catch (error) {
+    console.error('Error generating metadata:', error);
+    return {
+      title: 'Blog Post | Rec-er',
+      description: "Trishant Pahwa's blog, journals, records, and researches",
+    };
+  }
 }
 
-function BlogPage({ params }) {
-  const [blogData, setBlogData] = useState(null);
-  const [blogContent, setBlogContent] = useState([]);
-  const [codePens, setCodePens] = useState([]);
-  const [id, setId] = useState(null);
+async function BlogPage({ params }) {
+  const unwrappedParams = await params;
+  const id = unwrappedParams.id;
 
-  useEffect(() => {
-    // Unwrap params in Next.js 15+
-    const unwrapParams = async () => {
-      const unwrappedParams = await params;
-      setId(unwrappedParams.id);
-    };
-    unwrapParams();
-  }, [params]);
+  let blogData = null;
+  let blogContent = [];
+  let codePens = [];
 
   const getCodePens = (md) => {
     const codePenHashRegex = new RegExp('<codepen src="(.*)" />', "gm");
@@ -73,31 +80,69 @@ function BlogPage({ params }) {
     } else return [];
   };
 
-  useEffect(() => {
-    if (id) {
-      const fetchBlog = async () => {
-        try {
-          const data = await BlogsService.getBlog(id);
-          setBlogData(data);
-        } catch (err) {
-          console.log('Error fetching blog files:', err);
-        }
-      };
-      fetchBlog();
-    }
-  }, [id]);
+  try {
+    // Fetch directly from Qdrant
+    const qdrantClient = new QdrantClient({
+      url: process.env.QDRANT_URL,
+      apiKey: process.env.QDRANT_API_KEY,
+    });
 
-  useEffect(() => {
-    if (blogData) {
-      setCodePens(getCodePens(blogData.content.toString()));
-      setBlogContent(blogData.content.split(/<codepen src=".*" \/>/));
+    const numericId = !isNaN(id) ? Number(id) : id;
+    const result = await qdrantClient.retrieve(process.env.QDRANT_COLLECTION_NAME, { ids: [numericId] });
+    const blog = result[0];
+
+    if (blog) {
+      blogData = {
+        id: numericId,
+        title: blog.payload.title,
+        content: blog.payload.content,
+        createdAt: blog.payload.createdAt,
+        updatedAt: blog.payload.updatedAt,
+        tags: blog.payload.tags || [],
+      };
+
+      codePens = getCodePens(blogData.content.toString());
+      blogContent = blogData.content.split(/<codepen src=".*" \/>/);
     }
-  }, [blogData]);
+  } catch (err) {
+    console.error('Error fetching blog:', err);
+  }
+
+  // Generate JSON-LD structured data for better SEO
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: blogData?.title || `Blog Post ${id}`,
+    author: {
+      '@type': 'Person',
+      name: 'Trishant Pahwa',
+      url: 'https://trishantpahwa.com',
+    },
+    publisher: {
+      '@type': 'Person',
+      name: 'Trishant Pahwa',
+    },
+    datePublished: blogData?.createdAt || new Date().toISOString(),
+    dateModified: blogData?.updatedAt || blogData?.createdAt || new Date().toISOString(),
+    description: blogData?.content?.substring(0, 160).replace(/[#*`]/g, '') || '',
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': `https://rec-er.trishantpahwa.com/blog/${id}`,
+    },
+  };
 
   return (
-    <div className="App">
-      <BlogView id={id} markdownData={blogContent} codePens={codePens} />
-    </div>
+    <>
+      {/* Structured Data for SEO */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+
+      <article className="min-h-screen">
+        <BlogViewClient id={id} markdownData={blogContent} codePens={codePens} blogData={blogData} />
+      </article>
+    </>
   );
 }
 
