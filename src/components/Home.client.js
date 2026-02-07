@@ -1,13 +1,11 @@
 'use client';
 
 import { useEffect, useRef, useState } from "react";
-import figlet from "figlet";
-import standard from "figlet/importable-fonts/Standard.js";
 import { ConversationsService, LocalStorageService, UsersService } from "../services";
 
-export default function HomePageClient({ initialBlogList }) {
+export default function HomePageClient({ initialBlogList, figletText }) {
     const [blogList] = useState(initialBlogList || []);
-    const [textArt, setTextArt] = useState("");
+    const [textArt] = useState(figletText || '');
     const [command, setCommand] = useState("");
     const commandInput = useRef(null);
     const [history, setHistory] = useState([]);
@@ -38,26 +36,6 @@ export default function HomePageClient({ initialBlogList }) {
 
     useEffect(() => {
         let touchPath = 0;
-
-        figlet.parseFont("Standard", standard);
-        figlet.text(
-            "Rec-er",
-            {
-                font: "Standard",
-                horizontalLayout: "default",
-                verticalLayout: "default",
-                width: 100,
-                whitespaceBreak: true,
-            },
-            function (err, data) {
-                if (err) {
-                    console.log("Something went wrong...");
-                    console.dir(err);
-                    return;
-                }
-                setTextArt(data);
-            }
-        );
 
         if (commandInput.current) {
             commandInput.current.focus();

@@ -1,5 +1,7 @@
 import { QdrantClient } from '@qdrant/js-client-rest';
 import HomePageClient from '../src/components/Home.client';
+import figlet from "figlet";
+import standard from "figlet/importable-fonts/Standard.js";
 
 export const metadata = {
     title: 'Rec-er - Trishant Pahwa\'s Blog',
@@ -59,8 +61,23 @@ async function getBlogMetadata() {
     }
 }
 
+async function getFigletText() {
+    figlet.parseFont("Standard", standard);
+    return await figlet.textSync(
+        "Rec-er",
+        {
+            font: "Standard",
+            horizontalLayout: "default",
+            verticalLayout: "default",
+            width: 100,
+            whitespaceBreak: true,
+        }
+    );
+}
+
 export default async function HomePage() {
     const blogList = await getBlogMetadata();
+    const figletText = await getFigletText();
 
-    return <HomePageClient initialBlogList={blogList} />;
+    return <HomePageClient initialBlogList={blogList} figletText={figletText} />;
 }
