@@ -16,14 +16,14 @@ function BlogView(props) {
   }, []);
 
   return (
-    <div className="blogView" style={{ color: color, backgroundColor: backgroundColor }}>
+    <div className="absolute top-0 left-0 right-0 bottom-0 min-h-screen text-lg font-mono overflow-y-auto overflow-x-hidden whitespace-pre-wrap break-words" style={{ color: color, backgroundColor: backgroundColor }}>
       {props.markdownData.map((md, i) => (
         <div key={i}>
           <ReactMarkdown>{md}</ReactMarkdown>
           {i < props.markdownData.length - 1 && (
             <iframe
               title={props.id}
-              className="codepen-iframe"
+              className="h-[65vh] w-[85vw]"
               scrolling="no"
               src={
                 `https://codepen.io/trishantpahwa/embed/${props.codePens[i]}?default-tab=js%2Cresult`

@@ -16,13 +16,13 @@ function HomeView(props) {
 
     return (
         <div
-            className="Home"
+            className="absolute top-0 left-0 min-h-full w-full text-lg sm:text-lg text-xs font-mono break-words"
             style={{ color: props.color, background: props.backgroundColor }}
         >
             {userAgent}
             <br />
-            <div className="text-art">{props.textArt}</div>
-            <div className="description-text-art">
+            <div className="whitespace-pre text-[8px] sm:text-base">{props.textArt}</div>
+            <div className="text-[8px] sm:text-xs break-words max-w-full mb-2.5">
                 {
                     "This is Trishant Pahwa's blog, journals, records, and researches. Enter help to get a list of commands."
                 }
@@ -32,24 +32,24 @@ function HomeView(props) {
             <br />
             Last login: {new Date().toUTCString()} on dev0
             <br />
-            <div className="history">
+            <div className="flex flex-col whitespace-pre">
                 {props.history.map((_command, index) => {
                     return (
                         <div key={index}>
                             <div className="executed-command">{`${_command.command}`}</div>
-                            <div className="executed-output">
+                            <div className="max-w-full whitespace-pre-line break-words">
                                 {_command.output}
                             </div>
                         </div>
                     );
                 })}
             </div>
-            <div className="command">
-                <div className="user">{props.user}</div>
+            <div className="flex w-full">
+                <div className="whitespace-nowrap">{props.user}</div>
                 &nbsp;$
                 <input
                     style={{ color: props.color }}
-                    id="commandInput"
+                    className="border-0 bg-transparent outline-none text-xs sm:text-lg font-mono h-full w-full ml-0 sm:ml-1.5 focus:outline-none"
                     type="text"
                     value={props.command}
                     onKeyDown={(e) => props.checkCommand(e)}
