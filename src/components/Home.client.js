@@ -3,80 +3,10 @@
 import { useEffect, useRef, useState } from "react";
 import figlet from "figlet";
 import standard from "figlet/importable-fonts/Standard.js";
-import { ConversationsService, LocalStorageService, UsersService } from "../src/services";
-
-function HomeView(props) {
-    const [userAgent, setUserAgent] = useState('');
-
-    useEffect(() => {
-        if (typeof navigator !== 'undefined') {
-            setUserAgent(navigator.userAgent);
-        }
-    }, []);
-
-    return (
-        <main
-            className="absolute top-0 left-0 min-h-full w-full text-lg sm:text-lg text-xs font-mono break-words"
-            style={{ color: props.color, background: props.backgroundColor }}
-            role="main"
-            aria-label="Terminal interface"
-        >
-            <div className="sr-only">
-                <h1>Rec-er - Trishant Pahwa's Blog</h1>
-                <p>Interactive terminal-style blog interface. Type 'help' to see available commands.</p>
-            </div>
-            {userAgent}
-            <br />
-            <pre className="whitespace-pre text-[8px] sm:text-base" aria-label="ASCII art banner">{props.textArt}</pre>
-            <p className="text-[8px] sm:text-xs break-words max-w-full mb-2.5">
-                {
-                    "This is Trishant Pahwa's blog, journals, records, and researches. Enter help to get a list of commands."
-                }
-            </p>
-            <p className="text-[8px] sm:text-xs">
-                Rec-er comes with ABSOLUTELY NO WARRANTY, to the extent permitted
-                by applicable law.
-            </p>
-            <br />
-            Last login: {new Date().toUTCString()} on dev0
-            <br />
-            <section className="flex flex-col whitespace-pre" aria-label="Command history">
-                {props.history.map((_command, index) => {
-                    return (
-                        <div key={index}>
-                            <div className="executed-command" role="log">{`${_command.command}`}</div>
-                            <div className="max-w-full whitespace-pre-line break-words">
-                                {_command.output}
-                            </div>
-                        </div>
-                    );
-                })}
-            </section>
-            <form className="flex w-full" onSubmit={(e) => e.preventDefault()} aria-label="Terminal command input">
-                <label htmlFor="terminal-input" className="whitespace-nowrap">{props.user}</label>
-                &nbsp;$
-                <input
-                    id="terminal-input"
-                    style={{ color: props.color }}
-                    className="border-0 bg-transparent outline-none text-xs sm:text-lg font-mono h-full w-full ml-0 sm:ml-1.5 focus:outline-none"
-                    type="text"
-                    value={props.command}
-                    onKeyDown={(e) => props.checkCommand(e)}
-                    onKeyUp={(e) => props.checkInterrupt(e)}
-                    onChange={(e) => props.setCommand(e.target.value)}
-                    ref={props.commandInput}
-                    spellCheck={false}
-                    autoComplete="off"
-                    autoCapitalize="off"
-                    aria-label="Terminal command input"
-                />
-            </form>
-        </main>
-    );
-}
+import { ConversationsService, LocalStorageService, UsersService } from "../services";
 
 export default function HomePageClient({ initialBlogList }) {
-    const [blogList, setBlogList] = useState(initialBlogList || []);
+    const [blogList] = useState(initialBlogList || []);
     const [textArt, setTextArt] = useState("");
     const [command, setCommand] = useState("");
     const commandInput = useRef(null);
@@ -86,8 +16,15 @@ export default function HomePageClient({ initialBlogList }) {
 
     const [color, setColor] = useState("green");
     const [backgroundColor, setBackgroundColor] = useState("black");
+    const [userAgent, setUserAgent] = useState('');
 
     let ctrl = false;
+
+    useEffect(() => {
+        if (typeof navigator !== 'undefined') {
+            setUserAgent(navigator.userAgent);
+        }
+    }, []);
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
@@ -532,18 +469,63 @@ export default function HomePageClient({ initialBlogList }) {
 
     return (
         <div className="App">
-            <HomeView
-                color={color}
-                backgroundColor={backgroundColor}
-                textArt={textArt}
-                history={history}
-                command={command}
-                checkCommand={checkCommand}
-                checkInterrupt={checkInterrupt}
-                setCommand={setCommand}
-                commandInput={commandInput}
-                user={user}
-            />
+            <main
+                className="absolute top-0 left-0 min-h-full w-full text-lg sm:text-lg text-xs font-mono break-words"
+                style={{ color: color, background: backgroundColor }}
+                role="main"
+                aria-label="Terminal interface"
+            >
+                <div className="sr-only">
+                    <h1>Rec-er - Trishant Pahwa's Blog</h1>
+                    <p>Interactive terminal-style blog interface. Type 'help' to see available commands.</p>
+                </div>
+                {userAgent}
+                <br />
+                <pre className="whitespace-pre text-[8px] sm:text-base" aria-label="ASCII art banner">{textArt}</pre>
+                <p className="text-[8px] sm:text-xs break-words max-w-full mb-2.5">
+                    {
+                        "This is Trishant Pahwa's blog, journals, records, and researches. Enter help to get a list of commands."
+                    }
+                </p>
+                <p className="text-[8px] sm:text-xs">
+                    Rec-er comes with ABSOLUTELY NO WARRANTY, to the extent permitted
+                    by applicable law.
+                </p>
+                <br />
+                Last login: {new Date().toUTCString()} on dev0
+                <br />
+                <section className="flex flex-col whitespace-pre" aria-label="Command history">
+                    {history.map((_command, index) => {
+                        return (
+                            <div key={index}>
+                                <div className="executed-command" role="log">{`${_command.command}`}</div>
+                                <div className="max-w-full whitespace-pre-line break-words">
+                                    {_command.output}
+                                </div>
+                            </div>
+                        );
+                    })}
+                </section>
+                <form className="flex w-full" onSubmit={(e) => e.preventDefault()} aria-label="Terminal command input">
+                    <label htmlFor="terminal-input" className="whitespace-nowrap">{user}</label>
+                    &nbsp;$
+                    <input
+                        id="terminal-input"
+                        style={{ color: color }}
+                        className="border-0 bg-transparent outline-none text-xs sm:text-lg font-mono h-full w-full ml-0 sm:ml-1.5 focus:outline-none"
+                        type="text"
+                        value={command}
+                        onKeyDown={(e) => checkCommand(e)}
+                        onKeyUp={(e) => checkInterrupt(e)}
+                        onChange={(e) => setCommand(e.target.value)}
+                        ref={commandInput}
+                        spellCheck={false}
+                        autoComplete="off"
+                        autoCapitalize="off"
+                        aria-label="Terminal command input"
+                    />
+                </form>
+            </main>
         </div>
     );
 }

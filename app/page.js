@@ -1,5 +1,5 @@
 import { QdrantClient } from '@qdrant/js-client-rest';
-import HomePageClient from './HomePageClient';
+import HomePageClient from '../src/components/Home.client';
 
 export const metadata = {
     title: 'Rec-er - Trishant Pahwa\'s Blog',
