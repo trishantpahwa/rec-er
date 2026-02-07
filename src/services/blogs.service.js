@@ -3,7 +3,7 @@ const BlogsService = {
         try {
             const response = await fetch(`/api/blog?search=${encodeURIComponent(searchQuery)}`);
             const data = await response.json();
-            return data;
+            return data.results || [];
         } catch (error) {
             console.error('Error fetching blog files:', error);
             return {};

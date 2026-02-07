@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from "react";
-import { ConversationsService, LocalStorageService, UsersService } from "../services";
+import { BlogsService, ConversationsService, LocalStorageService, UsersService } from "../services";
 
 export default function Home({ initialBlogList, figletText }) {
     const [blogList] = useState(initialBlogList || []);
@@ -204,27 +204,17 @@ export default function Home({ initialBlogList, figletText }) {
                     helpText: "Opens the blog",
                 },
                 search: {
-                    func: (args) => {
-                        if (args.length === 1) {
-                            const keyword = args[0].toLowerCase();
-                            console.log(keyword) // Should use sentence as complete args for search => @trishantpahwa | 2026-02-07 17:41:38
-                            // const _blogList = Object.keys(blogList).filter(
-                            //     (blog) =>
-                            //         blogList[blog].Title.toLowerCase().includes(
-                            //             keyword
-                            //         )
-                            //             ? blogList[blog].Title
-                            //             : "" ||
-                            //             blogList[blog].Metadata.Tags.map(
-                            //                 (tag) => tag.toLowerCase()
-                            //             ).filter((tag) =>
-                            //                 tag.includes(keyword)
-                            //             ).length > 0
-                            // );
-                            // if (Object.keys(_blogList).length > 0)
-                            //     return ["BlogID", "\n", _blogList.join("\n")];
-                            // else return "No blogs found.";
-                        } else return "";
+                    func: async (args) => {
+                        if (args.length === 0) return "Invalid args";
+                        const query = args.join(" ");
+                        const results = await BlogsService.searchBlog(query);
+                        if (results.length === 0) return "No results found.";
+                        return [
+                            "BlogID\tTitle",
+                            ...results.map((result) => {
+                                return `${result.id}\t${result.title}`;
+                            }),
+                        ].join("\n");
                     },
                     helpText:
                         "Searches a given string or date in Blog's title or tags or date.",
