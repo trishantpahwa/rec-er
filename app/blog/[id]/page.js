@@ -1,5 +1,5 @@
 import { QdrantClient } from '@qdrant/js-client-rest';
-import BlogViewClient from "./BlogViewClient";
+import Blog from "../../../src/components/Blog.client";
 
 // Generate dynamic metadata for SEO
 export async function generateMetadata({ params }) {
@@ -96,9 +96,7 @@ async function BlogPage({ params }) {
         id: numericId,
         title: blog.payload.title,
         content: blog.payload.content,
-        createdAt: blog.payload.createdAt,
-        updatedAt: blog.payload.updatedAt,
-        tags: blog.payload.tags || [],
+        createdAt: new Date(numericId).toISOString(),
       };
 
       codePens = getCodePens(blogData.content.toString());
@@ -140,7 +138,7 @@ async function BlogPage({ params }) {
       />
 
       <article className="min-h-screen">
-        <BlogViewClient id={id} markdownData={blogContent} codePens={codePens} blogData={blogData} />
+        <Blog id={id} markdownData={blogContent} codePens={codePens} blogData={blogData} />
       </article>
     </>
   );

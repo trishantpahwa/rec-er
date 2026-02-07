@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
 
-export default function BlogViewClient({ id, markdownData, codePens, blogData }) {
+export default function Blog({ id, markdownData, codePens, blogData }) {
   const [color, setColor] = useState("green");
   const [backgroundColor, setBackgroundColor] = useState("black");
   const [mounted, setMounted] = useState(false);

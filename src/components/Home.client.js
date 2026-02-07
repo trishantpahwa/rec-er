@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { ConversationsService, LocalStorageService, UsersService } from "../services";
 
-export default function HomePageClient({ initialBlogList, figletText }) {
+export default function Home({ initialBlogList, figletText }) {
     const [blogList] = useState(initialBlogList || []);
     const [textArt] = useState(figletText || '');
     const [command, setCommand] = useState("");
@@ -207,22 +207,23 @@ export default function HomePageClient({ initialBlogList, figletText }) {
                     func: (args) => {
                         if (args.length === 1) {
                             const keyword = args[0].toLowerCase();
-                            const _blogList = Object.keys(blogList).filter(
-                                (blog) =>
-                                    blogList[blog].Title.toLowerCase().includes(
-                                        keyword
-                                    )
-                                        ? blogList[blog].Title
-                                        : "" ||
-                                        blogList[blog].Metadata.Tags.map(
-                                            (tag) => tag.toLowerCase()
-                                        ).filter((tag) =>
-                                            tag.includes(keyword)
-                                        ).length > 0
-                            );
-                            if (Object.keys(_blogList).length > 0)
-                                return ["BlogID", "\n", _blogList.join("\n")];
-                            else return "No blogs found.";
+                            console.log(keyword) // Should use sentence as complete args for search => @trishantpahwa | 2026-02-07 17:41:38
+                            // const _blogList = Object.keys(blogList).filter(
+                            //     (blog) =>
+                            //         blogList[blog].Title.toLowerCase().includes(
+                            //             keyword
+                            //         )
+                            //             ? blogList[blog].Title
+                            //             : "" ||
+                            //             blogList[blog].Metadata.Tags.map(
+                            //                 (tag) => tag.toLowerCase()
+                            //             ).filter((tag) =>
+                            //                 tag.includes(keyword)
+                            //             ).length > 0
+                            // );
+                            // if (Object.keys(_blogList).length > 0)
+                            //     return ["BlogID", "\n", _blogList.join("\n")];
+                            // else return "No blogs found.";
                         } else return "";
                     },
                     helpText:

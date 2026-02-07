@@ -1,5 +1,5 @@
 import { QdrantClient } from '@qdrant/js-client-rest';
-import HomePageClient from '../src/components/Home.client';
+import Home from '../src/components/Home.client';
 import figlet from "figlet";
 import standard from "figlet/importable-fonts/Standard.js";
 
@@ -46,11 +46,6 @@ async function getBlogMetadata() {
         points.points.forEach(point => {
             blogList[point.id] = {
                 Title: point.payload.title || `Blog ${point.id}`,
-                Metadata: {
-                    Tags: point.payload.tags || [],
-                    CreatedAt: point.payload.createdAt,
-                    UpdatedAt: point.payload.updatedAt,
-                }
             };
         });
 
@@ -79,5 +74,5 @@ export default async function HomePage() {
     const blogList = await getBlogMetadata();
     const figletText = await getFigletText();
 
-    return <HomePageClient initialBlogList={blogList} figletText={figletText} />;
+    return <Home initialBlogList={blogList} figletText={figletText} />;
 }
