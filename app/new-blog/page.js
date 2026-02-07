@@ -8,6 +8,10 @@ export default function BlogEditor() {
     const [title, setTitle] = useState("");
     const [isPublishing, setIsPublishing] = useState(false);
     const [isUploading, setIsUploading] = useState(false);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [password, setPassword] = useState("");
+    const [showPublishModal, setShowPublishModal] = useState(false);
+    const [publishPassword, setPublishPassword] = useState("");
     const fileInputRef = useRef(null);
 
     const handleEditorChange = (value) => {
@@ -20,31 +24,7 @@ export default function BlogEditor() {
             return;
         }
 
-        setIsPublishing(true);
-        try {
-            const content = code;
-            const response = await fetch('/api/publish-blog', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ title, content }),
-            });
-
-            const data = await response.json();
-
-            if (response.ok) {
-                alert(`Blog published successfully!\nTitle: ${title}\nID: ${data.id}`);
-                setCode(''); // Clear editor after successful publish
-            } else {
-                alert(`Failed to publish blog: ${data.error}\n${data.details || ''}`);
-            }
-        } catch (error) {
-            console.error('Error publishing blog:', error);
-            alert(`Error publishing blog: ${error.message}`);
-        } finally {
-            setIsPublishing(false);
-        }
+        setShowPublishModal(true);
     }
 
     const handleImageUpload = async (event) => {
@@ -98,6 +78,77 @@ export default function BlogEditor() {
     const triggerImageUpload = () => {
         fileInputRef.current?.click();
     };
+
+    const handlePasswordSubmit = (e) => {
+        e.preventDefault();
+        if (password === process.env.NEXT_PUBLIC_BLOG_UI_PASSWORD) {
+            setIsAuthenticated(true);
+        } else {
+            alert('Incorrect password');
+        }
+    };
+
+    const handlePublishConfirm = async (e) => {
+        e.preventDefault();
+        if (publishPassword === "") {
+            alert('Incorrect publish password');
+            return;
+        }
+
+        setShowPublishModal(false);
+        setPublishPassword("");
+
+        setIsPublishing(true);
+        try {
+            const content = code;
+            const response = await fetch('/api/blog', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ title, content, password: publishPassword }),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                alert(`Blog published successfully!\nTitle: ${title}\nID: ${data.id}`);
+                setCode('');
+            } else {
+                alert(`Failed to publish blog: ${data.error}\n${data.details || ''}`);
+            }
+        } catch (error) {
+            console.error('Error publishing blog:', error);
+            alert(`Error publishing blog: ${error.message}`);
+        } finally {
+            setIsPublishing(false);
+        }
+    };
+
+    if (!isAuthenticated) {
+        return (
+            <div className="h-screen w-screen flex items-center justify-center bg-slate-500">
+                <div className="bg-white p-8 rounded-lg shadow-md">
+                    <h2 className="text-xl font-semibold mb-4">Enter Password</h2>
+                    <form onSubmit={handlePasswordSubmit}>
+                        <input
+                            type="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            className="w-full p-2 border border-gray-300 rounded mb-4"
+                            placeholder="Password"
+                        />
+                        <button
+                            type="submit"
+                            className="w-full px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
+                        >
+                            Submit
+                        </button>
+                    </form>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="h-screen w-screen flex flex-col bg-slate-500">
@@ -197,6 +248,41 @@ export default function BlogEditor() {
                     </div>
                 </div>
             </main>
+
+            {/* Publish Confirmation Modal */}
+            {showPublishModal && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div className="bg-white p-8 rounded-lg shadow-md max-w-md w-full mx-4">
+                        <h2 className="text-xl font-semibold mb-4">Confirm Publish</h2>
+                        <p className="mb-4">Enter the publish password to confirm publishing this blog.</p>
+                        <form onSubmit={handlePublishConfirm}>
+                            <input
+                                type="password"
+                                value={publishPassword}
+                                onChange={(e) => setPublishPassword(e.target.value)}
+                                className="w-full p-2 border border-gray-300 rounded mb-4"
+                                placeholder="Publish Password"
+                                autoFocus
+                            />
+                            <div className="flex space-x-2">
+                                <button
+                                    type="button"
+                                    onClick={() => { setShowPublishModal(false); setPublishPassword(""); }}
+                                    className="flex-1 px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type="submit"
+                                    className="flex-1 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
+                                >
+                                    Publish
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

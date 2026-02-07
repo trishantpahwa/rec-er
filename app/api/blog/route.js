@@ -14,7 +14,14 @@ async function getExtractor() {
 
 export async function POST(request) {
     try {
-        const { title, content } = await request.json();
+        const { title, content, password } = await request.json();
+
+        if (!password || password !== process.env.PUBLISH_PASSWORD) {
+            return NextResponse.json(
+                { error: 'Invalid password' },
+                { status: 403 }
+            );
+        }
 
         if (!title || !content) {
             return NextResponse.json(

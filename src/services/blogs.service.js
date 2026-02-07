@@ -1,7 +1,7 @@
 const BlogsService = {
     getMetaDataList: async () => {
         try {
-            const response = await fetch(`${process.env.BASE_URL}/api/blog/metadata`);
+            const response = await fetch(`/api/blog/metadata`);
             const data = await response.json();
             const blogs = {};
             for (const item of data) {
