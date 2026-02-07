@@ -198,25 +198,25 @@ export default function BlogEditor() {
             </header>
 
             {/* Main Content */}
-            <main className="flex flex-row min-h-0">
+            <main className="flex flex-row flex-1 min-h-0 overflow-hidden">
                 {/* Editor Panel */}
                 <div className="w-1/2 flex flex-col bg-slate-900 border-r border-slate-300">
                     <div className="px-4 py-3 bg-slate-800 border-b border-slate-700">
                         <h2 className="text-sm font-medium text-slate-300">Editor</h2>
                     </div>
-                    <div className="flex-1 p-6">
+                    <div className="flex-1 p-6 overflow-hidden">
                         <div className="bg-slate-800 rounded-xl shadow-md p-4 h-full flex flex-col">
-                            <div className="flex items-center justify-between mb-4">
+                            <div className="flex items-center justify-between mb-4 flex-shrink-0">
                                 <input type="text" placeholder="Enter a catchy title..." value={title} onChange={(e) => setTitle(e.target.value)} className="flex-1 mr-4 rounded-md p-3 bg-slate-900 border border-slate-700 text-slate-200 placeholder-slate-500" />
-                                <div className="text-slate-400 text-sm">
+                                <div className="text-slate-400 text-sm flex-shrink-0">
                                     <div>{code.split(/\s+/).filter(Boolean).length} words</div>
                                     <div className="text-xs text-slate-500">{code.length} chars</div>
                                 </div>
                             </div>
 
-                            <div className="flex-1 border border-slate-700 rounded-md overflow-hidden">
+                            <div className="flex-1 border border-slate-700 rounded-md overflow-hidden min-h-0">
                                 <Editor
-                                    height="calc(100vh - 220px)"
+                                    height="100%"
                                     width="100%"
                                     theme="vs-dark"
                                     value={code}
@@ -242,11 +242,11 @@ export default function BlogEditor() {
                 </div>
 
                 {/* Preview Panel */}
-                <div className="w-1/2 flex flex-col">
-                    <div className="px-4 py-3 bg-slate-50 border-b border-slate-200">
+                <div className="w-1/2 flex flex-col bg-white">
+                    <div className="px-4 py-3 bg-slate-50 border-b border-slate-200 flex-shrink-0">
                         <h2 className="text-sm font-medium text-slate-700">Live Preview</h2>
                     </div>
-                    <div className="flex-1 overflow-auto p-6">
+                    <div className="flex-1 overflow-y-auto p-6">
                         <div className="max-w-3xl mx-auto">
                             {code.trim() ? (
                                 <div className="prose prose-slate max-w-none">
